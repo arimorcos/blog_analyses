@@ -2,6 +2,8 @@ __author__ = 'arimorcos'
 
 import re
 import urllib2
+import enchant
+from textstat.textstat import textstat
 
 
 def countWords(commentList):
@@ -14,6 +16,34 @@ def countWords(commentList):
     commentCount = [len(commentStr.split()) for commentStr in commentList]
 
     return sum(commentCount)
+
+
+def countMisspellings(commentList):
+    """
+    Count the number of misspelled words
+    :param commentList:
+    :return: the count of misspelled words
+    """
+
+    # create dictionary object
+    dictionary = enchant.Dict('en-US')
+
+    # count misspelled words
+    misSpelledCount = 0
+    for comment in commentList:
+
+        misSpelledCount += sum([not dictionary.check(word) for word in comment.split()])
+
+    return misSpelledCount
+
+
+def getReadabilityStats(text):
+
+    # get scores
+    fleschGrade = textstat.flesch_kincaid_grade(text)
+
+    # store
+    return {'fleschGrade': fleschGrade}
 
 
 def getCelebList():
